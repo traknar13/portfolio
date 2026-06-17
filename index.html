@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yoann Bardot — Admin Systèmes & Réseaux</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #0f1525;
+    --bg3: #141c30;
+    --card: #111827;
+    --card2: #1a2236;
+    --cyan: #EFBF04;
+    --cyan2: #d4a803;
+    --green: #4169E1;
+    --green2: #5a7ce8;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --muted2: #94a3b8;
+    --border: rgba(239,191,4,0.14);
+    --border2: rgba(239,191,4,0.3);
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 60px;
+  }
+  .nav-logo {
+    font-family: var(--mono); font-size: 14px; font-weight: 700;
+    color: var(--cyan); letter-spacing: 0.05em;
+  }
+  .nav-logo span { color: var(--muted2); font-weight: 400; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--mono); font-size: 13px; color: var(--muted2);
+    text-decoration: none; letter-spacing: 0.03em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--cyan); }
+  .nav-links a.active { color: var(--cyan); }
+
+  /* SECTIONS */
+  section { padding: 5rem 0; }
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
+
+  /* HERO */
+  #accueil {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    position: relative; overflow: hidden;
+    padding-top: 60px;
+  }
+  .hero-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center;
+  }
+  .hero-tag {
+    font-family: var(--mono); font-size: 12px; font-weight: 500;
+    color: var(--cyan); letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .hero-tag::before { content: '> '; }
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 600; line-height: 1.1;
+    color: #fff; margin-bottom: 0.5rem;
+  }
+  .hero-subtitle {
+    font-family: var(--mono); font-size: 1rem; font-weight: 400;
+    color: var(--cyan2); margin-bottom: 1.5rem;
+  }
+  .hero-desc { color: var(--muted2); font-size: 1rem; margin-bottom: 2rem; }
+  .badge-dispo {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(65,105,225,0.1); border: 1px solid rgba(65,105,225,0.35);
+    color: var(--green2); font-family: var(--mono); font-size: 12px;
+    padding: 6px 14px; border-radius: 20px; margin-bottom: 2rem;
+  }
+  .badge-dispo::before {
+    content: ''; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green); animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+  }
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--cyan); color: #0a0e1a;
+    font-family: var(--mono); font-size: 13px; font-weight: 700;
+    padding: 10px 24px; border-radius: 4px; text-decoration: none;
+    letter-spacing: 0.05em; transition: background 0.2s, transform 0.1s;
+    border: none; cursor: pointer; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--cyan2); transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent; color: var(--cyan);
+    font-family: var(--mono); font-size: 13px; font-weight: 500;
+    padding: 10px 24px; border-radius: 4px; text-decoration: none;
+    letter-spacing: 0.05em; border: 1px solid var(--border2);
+    transition: background 0.2s, transform 0.1s; cursor: pointer; display: inline-block;
+  }
+  .btn-outline:hover { background: rgba(239,191,4,0.08); transform: translateY(-1px); }
+
+  /* TERMINAL BLOCK */
+  .terminal {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+    font-family: var(--mono); font-size: 13px;
+  }
+  .terminal-bar {
+    background: var(--card2); padding: 10px 16px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
+  .terminal-title { font-size: 11px; color: var(--muted); margin-left: 4px; }
+  .terminal-body { padding: 1.5rem; }
+  .t-line { margin-bottom: 6px; }
+  .t-prompt { color: var(--cyan); }
+  .t-cmd { color: #fff; }
+  .t-comment { color: var(--muted); }
+  .t-val { color: var(--green); }
+  .t-key { color: #c792ea; }
+  .t-str { color: #f78c6c; }
+  .t-cursor {
+    display: inline-block; width: 8px; height: 14px;
+    background: var(--cyan); vertical-align: text-bottom;
+    animation: blink 1.2s step-end infinite;
+  }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* SECTION TITLES */
+  .section-label {
+    font-family: var(--mono); font-size: 12px; color: var(--cyan);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .section-label::before { content: '// '; }
+  h2 {
+    font-size: 2rem; font-weight: 600; color: #fff; margin-bottom: 0.5rem;
+  }
+  .section-line {
+    width: 48px; height: 2px;
+    background: linear-gradient(90deg, var(--cyan), transparent);
+    margin-bottom: 3rem;
+  }
+
+  /* A PROPOS */
+  .apropos-text { max-width: 760px; }
+  .apropos-text p { color: var(--muted2); margin-bottom: 1.25rem; font-size: 1.02rem; }
+  .apropos-text p:last-child { margin-bottom: 0; }
+  .apropos-text strong { color: var(--cyan); font-weight: 500; }
+
+  /* PROJETS */
+  .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .project-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.5rem;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .project-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--green));
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .project-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+  .project-card:hover::before { opacity: 1; }
+  .project-type {
+    font-family: var(--mono); font-size: 11px; font-weight: 500;
+    color: var(--cyan); letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .project-card h3 { font-size: 1.1rem; font-weight: 600; color: #fff; margin-bottom: 0.5rem; }
+  .project-card p { font-size: 14px; color: var(--muted2); margin-bottom: 1rem; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-family: var(--mono); font-size: 11px;
+    background: rgba(239,191,4,0.08); border: 1px solid var(--border);
+    color: var(--cyan2); padding: 3px 10px; border-radius: 3px;
+  }
+  .tag-green {
+    background: rgba(65,105,225,0.08); border-color: rgba(65,105,225,0.25);
+    color: var(--green2);
+  }
+  .tag-purple {
+    background: rgba(120,150,235,0.08); border-color: rgba(120,150,235,0.25);
+    color: #92a8f0;
+  }
+  .project-full { grid-column: 1 / -1; }
+
+  /* DETAILS DEPLIABLES */
+  .project-details { margin: 0 0 1rem; }
+  .project-details summary {
+    cursor: pointer; font-family: var(--mono); font-size: 12px; color: var(--cyan);
+    letter-spacing: 0.03em; padding: 8px 0; list-style: none;
+    display: flex; align-items: center; gap: 8px; user-select: none;
+    border-top: 1px solid var(--border);
+  }
+  .project-details summary::-webkit-details-marker { display: none; }
+  .project-details summary::before {
+    content: '+'; display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border: 1px solid var(--border2); border-radius: 4px;
+    font-size: 14px; transition: transform 0.2s;
+  }
+  .project-details[open] summary::before { content: '−'; }
+  .project-details summary:hover { color: var(--cyan2); }
+  .details-body { padding: 0.5rem 0 0.5rem; }
+  .details-body h4 {
+    font-size: 13px; color: #fff; font-weight: 600; margin: 1rem 0 0.4rem;
+    font-family: var(--mono); letter-spacing: 0.02em;
+  }
+  .details-body h4:first-child { margin-top: 0.5rem; }
+  .details-body p { font-size: 13.5px; color: var(--muted2); margin-bottom: 0; }
+  code {
+    font-family: var(--mono); font-size: 0.88em;
+    background: rgba(239,191,4,0.08); color: var(--cyan2);
+    padding: 1px 6px; border-radius: 4px;
+  }
+  .pdf-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 12px; font-weight: 500;
+    color: var(--cyan); text-decoration: none;
+    padding: 8px 16px; border: 1px solid var(--border2); border-radius: 4px;
+    margin-bottom: 1rem; transition: background 0.2s, transform 0.1s;
+  }
+  .pdf-link:hover { background: rgba(239,191,4,0.08); transform: translateY(-1px); }
+  .pdf-link .pdf-icon { font-size: 15px; }
+
+  /* TIMELINE CV */
+  .cv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+  .cv-col h3 {
+    font-family: var(--mono); font-size: 13px; color: var(--cyan);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);
+  }
+  .timeline { position: relative; }
+  .timeline::before {
+    content: ''; position: absolute; left: 7px; top: 6px; bottom: 0; width: 1px;
+    background: var(--border2);
+  }
+  .tl-item { position: relative; padding-left: 28px; margin-bottom: 1.75rem; }
+  .tl-dot {
+    position: absolute; left: 0; top: 6px;
+    width: 15px; height: 15px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--cyan);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tl-dot-inner {
+    width: 5px; height: 5px; border-radius: 50%; background: var(--cyan);
+  }
+  .tl-date {
+    font-family: var(--mono); font-size: 11px; color: var(--cyan2);
+    margin-bottom: 3px;
+  }
+  .tl-title { font-size: 15px; font-weight: 500; color: #fff; margin-bottom: 2px; }
+  .tl-org { font-size: 13px; color: var(--muted2); margin-bottom: 0.5rem; }
+  .tl-bullets { list-style: none; }
+  .tl-bullets li {
+    font-size: 13px; color: var(--muted2); padding: 2px 0;
+    position: relative; padding-left: 14px;
+  }
+  .tl-bullets li::before { content: '›'; position: absolute; left: 0; color: var(--cyan); }
+
+  /* COMPETENCES */
+  .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
+  .skill-group {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem;
+  }
+  .skill-group-title {
+    font-family: var(--mono); font-size: 11px; font-weight: 700;
+    color: var(--cyan); letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;
+  }
+  .skill-group-title::before {
+    content: ''; width: 4px; height: 14px; border-radius: 2px; background: var(--cyan);
+  }
+  .skill-item {
+    font-family: var(--mono); font-size: 12px; color: var(--muted2);
+    padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .skill-item:last-child { border-bottom: none; }
+  .skill-item::before { content: '$ '; color: var(--green2); }
+
+  /* VEILLE */
+  .veille-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .veille-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.5rem;
+  }
+  .veille-card-title {
+    font-size: 15px; font-weight: 500; color: #fff; margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .veille-icon { font-size: 18px; }
+  .veille-card p { font-size: 14px; color: var(--muted2); }
+  .veille-sources { margin-top: 1rem; }
+  .veille-source {
+    font-family: var(--mono); font-size: 12px; color: var(--cyan2);
+    padding: 3px 0; display: block; text-decoration: none; transition: color 0.15s;
+  }
+  a.veille-source:hover { color: var(--cyan); }
+  .veille-source::before { content: '→ '; color: var(--muted); }
+  .veille-topics { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 1rem; }
+
+  /* CONTACT */
+  #contact { background: var(--bg2); }
+  .contact-inner {
+    text-align: center;
+    max-width: 560px; margin: 0 auto;
+  }
+  .contact-inner p { color: var(--muted2); margin-bottom: 2.5rem; }
+  .contact-links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+  .contact-link {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 13px; color: var(--muted2);
+    text-decoration: none; padding: 10px 20px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 6px; transition: all 0.2s;
+  }
+  .contact-link:hover { color: var(--cyan); border-color: var(--border2); }
+  .contact-link-icon { font-size: 16px; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border); padding: 1.5rem 2rem;
+    text-align: center; font-family: var(--mono); font-size: 12px; color: var(--muted);
+  }
+
+  /* BG DECO */
+  .bg-grid {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(239,191,4,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(239,191,4,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .bg-glow {
+    position: fixed; top: -200px; right: -200px; width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(239,191,4,0.06) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+  .bg-glow2 {
+    position: fixed; bottom: -200px; left: -200px; width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(65,105,225,0.05) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+  .content-wrap { position: relative; z-index: 1; }
+
+  /* NAV MOBILE */
+  .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--muted2); margin: 5px 0; border-radius: 2px; transition: 0.2s; }
+
+  @media (max-width: 768px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .cv-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+    .veille-grid { grid-template-columns: 1fr; }
+    .project-full { grid-column: auto; }
+    .hamburger { display: block; }
+    .nav-links { display: none; position: absolute; top: 60px; left: 0; right: 0;
+      background: rgba(10,14,26,0.98); flex-direction: column; gap: 0; padding: 1rem 0;
+      border-bottom: 1px solid var(--border); }
+    .nav-links.open { display: flex; }
+    .nav-links a { padding: 0.75rem 2rem; display: block; }
+  }
+  @media (max-width: 480px) {
+    .skills-grid { grid-template-columns: 1fr; }
+    h1 { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+<div class="bg-glow2"></div>
+
+<div class="content-wrap">
+
+<nav>
+  <div class="nav-logo">yoann<span>.bardot</span></div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#accueil" class="active">Accueil</a></li>
+    <li><a href="#apropos">À propos</a></li>
+    <li><a href="#projets">Projets</a></li>
+    <li><a href="#cv">CV & Compétences</a></li>
+    <li><a href="#veille">Veille techno</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ACCUEIL -->
+<section id="accueil">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-tag">Alternant — Systèmes & Réseaux</div>
+        <h1>Yoann<br>Bardot</h1>
+        <div class="hero-subtitle">// Admin Sys & Réseaux · BTS SIO SISR</div>
+        <div class="badge-dispo">Disponible en alternance — sept. 2026</div>
+        <p class="hero-desc">
+          Étudiant en 2ème année de BTS SIO option SISR à Clermont-Ferrand, passionné par l'infrastructure réseau, la sécurité et l'administration système. À la recherche d'une alternance dès septembre 2026.
+        </p>
+        <div class="hero-ctas">
+          <a href="#apropos" class="btn-primary">En savoir plus</a>
+          <a href="#contact" class="btn-outline">Me contacter</a>
+        </div>
+      </div>
+      <div>
+        <div class="terminal">
+          <div class="terminal-bar">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+            <span class="terminal-title">yoann@sysadmin ~ bash</span>
+          </div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">❯ </span><span class="t-cmd">whoami</span></div>
+            <div class="t-line" style="margin-left:1rem;margin-bottom:12px;"><span class="t-val">Yoann Bardot</span></div>
+            <div class="t-line"><span class="t-prompt">❯ </span><span class="t-cmd">cat profile.json</span></div>
+            <div class="t-line" style="margin-left:1rem">{</div>
+            <div class="t-line" style="margin-left:2rem"><span class="t-key">"formation"</span>: <span class="t-str">"BTS SIO SISR"</span>,</div>
+            <div class="t-line" style="margin-left:2rem"><span class="t-key">"école"</span>: <span class="t-str">"GFS Clermont-Fd"</span>,</div>
+            <div class="t-line" style="margin-left:2rem"><span class="t-key">"statut"</span>: <span class="t-str">"Cherche alternance"</span>,</div>
+            <div class="t-line" style="margin-left:2rem"><span class="t-key">"stack"</span>: [<span class="t-str">"Windows Server"</span>, <span class="t-str">"Debian"</span>,</div>
+            <div class="t-line" style="margin-left:3rem"><span class="t-str">"Active Directory"</span>, <span class="t-str">"Fortinet"</span>]</div>
+            <div class="t-line" style="margin-left:1rem">}</div>
+            <div class="t-line" style="margin-top:10px"><span class="t-prompt">❯ </span><span class="t-cursor"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- A PROPOS -->
+<section id="apropos">
+  <div class="container">
+    <div class="section-label">à propos</div>
+    <h2>Bienvenue sur mon portfolio</h2>
+    <div class="section-line"></div>
+    <div class="apropos-text">
+      <p>Je m'appelle <strong>Yoann Bardot</strong>, je suis actuellement en 2ème année de BTS SIO (Services Informatiques aux Organisations), option SISR (Solutions d'Infrastructure, Systèmes et Réseaux). Cette formation m'a permis de développer des compétences solides dans l'administration des systèmes et des réseaux, la gestion de la sécurité informatique, ainsi que le déploiement et la maintenance d'infrastructures.</p>
+      <p>Passionné par l'informatique et les nouvelles technologies, j'effectue une veille technologique régulière afin de rester informé des évolutions du secteur et d'enrichir continuellement mes connaissances. Cette démarche me permet d'anticiper les nouvelles tendances et de mieux appréhender les enjeux du métier de technicien systèmes et réseaux.</p>
+      <p>Au travers de ce portfolio, je vous présente les compétences que j'ai acquises, les projets que j'ai réalisés ainsi que les expériences professionnelles qui ont jalonné ma formation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROJETS -->
+<section id="projets" style="background: var(--bg2);">
+  <div class="container">
+    <div class="section-label">projets</div>
+    <h2>Ce que j'ai réalisé</h2>
+    <div class="section-line"></div>
+    <p style="color:var(--muted2); max-width:720px; margin-bottom:2.5rem; margin-top:-1.5rem;">Lors de ma 2ème année de BTS SIO, j'ai réalisé deux projets sur une infrastructure complète virtualisée sous Hyper-V (domaine <code style="color:var(--cyan2);font-family:var(--mono);font-size:0.9em">ybdt.local</code>) : un serveur de messagerie et un serveur de supervision. Cliquez sur un projet pour en voir le détail.</p>
+    <div class="projects-grid">
+
+      <div class="project-card project-full">
+        <div class="project-type">Projet BTS SIO n°1 · E6 — Situation professionnelle</div>
+        <h3>Serveur de messagerie Exchange 2019</h3>
+        <p>Déploiement complet d'un serveur de messagerie d'entreprise sous Windows Server 2025, intégré à l'Active Directory. Gestion des boîtes aux lettres, bases de données dédiées, boîtes partagées et calendrier collaboratif.</p>
+        <ul style="list-style:none;margin-bottom:1rem">
+          <li style="font-size:13px;color:var(--muted2);padding:3px 0;padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--cyan)">›</span> VM Windows Server 2025 (16 Go RAM, VLAN 120, IP 192.168.120.251) jointe au domaine</li>
+          <li style="font-size:13px;color:var(--muted2);padding:3px 0;padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--cyan)">›</span> Installation Exchange 2019 CU10 + prérequis (Visual C++, rôle boîtes aux lettres)</li>
+          <li style="font-size:13px;color:var(--muted2);padding:3px 0;padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--cyan)">›</span> Zones DNS (mail / autodiscover), certificat auto-signé déployé par GPO</li>
+          <li style="font-size:13px;color:var(--muted2);padding:3px 0;padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--cyan)">›</span> Bases de données séparées (Direction/IT et Employés), migration de boîtes</li>
+          <li style="font-size:13px;color:var(--muted2);padding:3px 0;padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--cyan)">›</span> Boîtes aux lettres partagées et partage de calendrier inter-utilisateurs</li>
+        </ul>
+        <details class="project-details">
+          <summary>Voir les étapes détaillées</summary>
+          <div class="details-body">
+            <h4>Préparation du serveur</h4>
+            <p>Création de la VM sous Hyper-V (4 vCPU, 16 Go de RAM dynamique, disque 80 Go, carte réseau sur le VLAN 120). Installation de Windows Server 2025 en expérience utilisateur, configuration de l'IP statique <code>192.168.120.251</code>, renommage de la machine et jonction au domaine <code>ybdt.local</code>.</p>
+            <h4>Installation d'Exchange 2019</h4>
+            <p>Installation des prérequis (redistribuables Visual C++ 2012/2013), montage de l'ISO Exchange et lancement du setup en administrateur. Sélection du rôle « boîte aux lettres », nom d'organisation <code>ybdt</code>, puis exécution des tests de préparation avant installation.</p>
+            <h4>Configuration DNS & certificat</h4>
+            <p>Création des zones DNS <code>mail.ybdt.local</code> et <code>autodiscover.ybdt.local</code> avec leurs enregistrements hôte (A). Génération d'un certificat auto-signé en PowerShell (<code>New-SelfSignedCertificate</code>), affectation au service IIS, export et déploiement automatique sur tous les postes du domaine via une GPO « Certificat Exchange ».</p>
+            <h4>Boîtes aux lettres & bases de données</h4>
+            <p>Création des boîtes via le centre d'administration Exchange (ECP). Mise en place de deux bases de données dédiées — <code>BddVipDB1</code> (Direction & IT) et <code>BddUserDB1</code> (Employés) — avec redémarrage du service <code>MSExchangeIS</code>, puis test de migration de boîtes entre bases.</p>
+            <h4>Collaboration</h4>
+            <p>Création de boîtes aux lettres partagées par unité d'organisation (IT, Employés) et activation du partage de calendrier (stratégie de partage + <code>Set-OwaVirtualDirectory</code>). Vérification de l'envoi de mails et du partage de calendrier entre utilisateurs via l'interface web OWA.</p>
+          </div>
+        </details>
+        <a class="pdf-link" href="projets/projet1-exchange.pdf" target="_blank" rel="noopener">
+          <span class="pdf-icon">&#128196;</span> Documentation technique (PDF)
+        </a>
+        <div class="tags">
+          <span class="tag">Windows Server 2025</span>
+          <span class="tag">Exchange 2019</span>
+          <span class="tag">Active Directory</span>
+          <span class="tag">DNS</span>
+          <span class="tag">GPO</span>
+          <span class="tag">PowerShell</span>
+          <span class="tag-green tag">Hyper-V</span>
+        </div>
+      </div>
+
+      <div class="project-card project-full">
+        <div class="project-type">Projet BTS SIO n°2 · E6 — Situation professionnelle</div>
+        <h3>Serveur de supervision Centreon</h3>
+        <p>Mise en place d'une solution de supervision réseau sous Debian 12 avec Centreon. Surveillance de l'ensemble du parc (serveurs Windows, switch Cisco, routeur Ubiquiti) via SNMP, avec tableaux de bord et notifications par e-mail.</p>
+        <ul style="list-style:none;margin-bottom:1rem">
+          <li style="font-size:13px;color:var(--muted2);padding:3px 0;padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--cyan)">›</span> VM Debian 12 (IP 192.168.120.252), installation Centreon + MariaDB + Apache</li>
+          <li style="font-size:13px;color:var(--muted2);padding:3px 0;padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--cyan)">›</span> Déploiement de l'agent SNMP sur serveurs Windows, switch Cisco et routeur Ubiquiti</li>
+          <li style="font-size:13px;color:var(--muted2);padding:3px 0;padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--cyan)">›</span> GPO pare-feu pour autoriser le port SNMP (UDP 161) sur le domaine</li>
+          <li style="font-size:13px;color:var(--muted2);padding:3px 0;padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--cyan)">›</span> Notifications e-mail via Postfix relayé sur Exchange</li>
+          <li style="font-size:13px;color:var(--muted2);padding:3px 0;padding-left:14px;position:relative"><span style="position:absolute;left:0;color:var(--cyan)">›</span> Tableaux de bord personnalisés (VLAN 120, routeur + switch)</li>
+        </ul>
+        <details class="project-details">
+          <summary>Voir les étapes détaillées</summary>
+          <div class="details-body">
+            <h4>Installation de Debian & Centreon</h4>
+            <p>Création de la VM Debian 12 (4 vCPU, 8 Go RAM, disque 40 Go, VLAN 120) avec IP <code>192.168.120.252</code>, passerelle et DNS du domaine. Installation des dépôts (Sury PHP 8.2, MariaDB 10.11, Centreon 25.10), puis de Centreon. Sécurisation de la base MariaDB et démarrage des services (Apache, php-fpm, centengine, gorgoned…).</p>
+            <h4>Configuration web</h4>
+            <p>Installation via l'assistant web (<code>http://192.168.120.252/centreon</code>) : vérification des prérequis, moteur de supervision, compte admin, connexion à la base MariaDB et installation des modules. Réglage de la langue (fr_FR) et du fuseau (Europe/Paris), puis ajout de la licence gratuite Centreon IT-100.</p>
+            <h4>Déploiement SNMP sur le parc</h4>
+            <p>Installation du service SNMP (communauté <code>ybdtspv</code>, accès en lecture seule depuis le superviseur) sur les serveurs Windows (AD, Exchange, Core via PowerShell), le switch Cisco et le routeur Ubiquiti (EdgeOS en CLI). Création d'une GPO « SNMP - SPV » pour ouvrir le port UDP 161 dans le pare-feu du domaine.</p>
+            <h4>Notifications par e-mail</h4>
+            <p>Installation de Postfix sur le serveur Centreon, configuré en relais (<code>relayhost</code>) vers le serveur Exchange (192.168.120.251:25). Activation du connecteur de réception anonyme côté Exchange, puis test d'envoi de mail. Création d'un contact <code>ITsupport</code> recevant les alertes (24x7, host-notify-by-email).</p>
+            <h4>Hôtes & tableaux de bord</h4>
+            <p>Téléchargement des connecteurs de supervision (Windows SNMP, Cisco, Linux, Ubiquiti), création des 6 hôtes avec leurs modèles, et changement massif pour lier le contact ITsupport. Construction de tableaux de bord personnalisés (statuts, métriques CPU/RAM, latence ping) pour le VLAN 120 et l'ensemble routeur + switch.</p>
+          </div>
+        </details>
+        <a class="pdf-link" href="projets/projet2-centreon.pdf" target="_blank" rel="noopener">
+          <span class="pdf-icon">&#128196;</span> Documentation technique (PDF)
+        </a>
+        <div class="tags">
+          <span class="tag">Debian 12</span>
+          <span class="tag">Centreon</span>
+          <span class="tag">SNMP</span>
+          <span class="tag">MariaDB</span>
+          <span class="tag">Postfix</span>
+          <span class="tag-purple tag">Cisco</span>
+          <span class="tag-purple tag">Ubiquiti</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-type">Stage · AC2C Informatique · Mars – Avr. 2026</div>
+        <h3>Admin Réseau – Pare-feu Fortinet</h3>
+        <p>Administration des serveurs, gestion des postes clients, configuration de VLANs, DHCP, DNS, et mise en place de règles de routage sur pare-feu Fortinet. Création de plans d'infrastructure réseau.</p>
+        <div class="tags">
+          <span class="tag">Fortinet</span>
+          <span class="tag">VLANs</span>
+          <span class="tag">DHCP / DNS</span>
+          <span class="tag-purple tag">Infra réseau</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-type">Stage · AC2C Informatique · Fév. – Avr. 2025</div>
+        <h3>Admin Réseau & Support</h3>
+        <p>Maintenance et configuration des serveurs et postes clients, assistance utilisateurs, gestion du parc informatique, interventions réseau (VLANs, DHCP, DNS).</p>
+        <div class="tags">
+          <span class="tag">Windows Server</span>
+          <span class="tag">VLANs</span>
+          <span class="tag">GLPI</span>
+          <span class="tag-purple tag">Support N1/N2</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-type">Stage · Upd@te Informatique · Mai 2016</div>
+        <h3>Technicien de maintenance</h3>
+        <p>Maintenance et installation de postes informatiques, dépannage logiciels et matériels. Première expérience terrain dans le milieu informatique.</p>
+        <div class="tags">
+          <span class="tag">Maintenance</span>
+          <span class="tag-green tag">Hardware</span>
+          <span class="tag-green tag">Dépannage</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CV & COMPETENCES -->
+<section id="cv">
+  <div class="container">
+    <div class="section-label">parcours & compétences</div>
+    <h2>CV & Skills</h2>
+    <div class="section-line"></div>
+
+    <div class="cv-grid">
+      <div class="cv-col">
+        <h3>&#128218; Formations</h3>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+            <div class="tl-date">Sept. 2024 → Présent</div>
+            <div class="tl-title">BTS SIO — Option SISR</div>
+            <div class="tl-org">GFS · Clermont-Ferrand</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+            <div class="tl-date">Obtenu en 2018</div>
+            <div class="tl-title">Bac Pro Systèmes Électroniques & Numériques</div>
+            <div class="tl-org">Lycée Albert Einstein · Montluçon</div>
+          </div>
+        </div>
+
+        <h3 style="margin-top:2rem">&#128188; Expériences</h3>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+            <div class="tl-date">Avr. 2026 → Présent</div>
+            <div class="tl-title">Stagiaire Admin Réseau</div>
+            <div class="tl-org">AC2C Informatique · Nohanent</div>
+            <ul class="tl-bullets">
+              <li>Configuration serveurs & postes clients</li>
+              <li>Routage Fortinet, VLANs, DHCP, DNS</li>
+              <li>Plans d'infrastructure réseau</li>
+            </ul>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+            <div class="tl-date">Fév. – Avr. 2025</div>
+            <div class="tl-title">Stagiaire Admin Réseau</div>
+            <div class="tl-org">AC2C Informatique · Nohanent</div>
+            <ul class="tl-bullets">
+              <li>Support utilisateurs & gestion parc</li>
+              <li>Interventions réseau</li>
+            </ul>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+            <div class="tl-date">Mai – Juin 2016</div>
+            <div class="tl-title">Stagiaire Technicien Maintenance</div>
+            <div class="tl-org">Upd@te Informatique · Le Cendre</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cv-col">
+        <h3>&#128296; Compétences techniques</h3>
+        <div class="skills-grid" style="grid-template-columns:1fr;gap:0.75rem;margin-top:0">
+
+          <div class="skill-group">
+            <div class="skill-group-title">Systèmes</div>
+            <div class="skill-item">Windows Server 2022 / 2025 Core</div>
+            <div class="skill-item">Debian 12</div>
+            <div class="skill-item">Active Directory</div>
+            <div class="skill-item">Hyper-V</div>
+            <div class="skill-item">Exchange 2019</div>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-group-title">Réseau</div>
+            <div class="skill-item">VLANs · DHCP · DNS</div>
+            <div class="skill-item">Switch · Routage</div>
+            <div class="skill-item">NAS</div>
+            <div class="skill-item">Plans d'infra réseau</div>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-group-title">Sécurité & Outils</div>
+            <div class="skill-item">Pare-feu Fortinet</div>
+            <div class="skill-item">Sauvegardes & gestion des accès</div>
+            <div class="skill-item">GLPI · Office 365</div>
+            <div class="skill-item">Centreon (supervision)</div>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-group-title">Langues</div>
+            <div class="skill-item">Français — langue maternelle</div>
+            <div class="skill-item">Anglais — intermédiaire</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VEILLE TECHNO -->
+<section id="veille" style="background: var(--bg2);">
+  <div class="container">
+    <div class="section-label">veille technologique</div>
+    <h2>Ce que je suis de près</h2>
+    <div class="section-line"></div>
+    <p style="color:var(--muted2); max-width:700px; margin-bottom:2.5rem; margin-top:-1.5rem;">Je m'informe quotidiennement via une sélection de sources spécialisées pour suivre l'actualité du secteur, les nouvelles technologies et les alertes de sécurité.</p>
+    <div class="veille-grid">
+
+      <div class="veille-card">
+        <div class="veille-card-title">
+          <span class="veille-icon">&#128272;</span> Sécurité informatique
+        </div>
+        <p>Suivi des alertes de sécurité, vulnérabilités et fuites de données pour rester à jour sur les menaces et les bonnes pratiques.</p>
+        <div class="veille-sources">
+          <a class="veille-source" href="https://www.cert.ssi.gouv.fr/" target="_blank" rel="noopener">Alertes de sécurité (CERT-FR)</a>
+          <span class="veille-source">C'est qui qui a fuité aujourd'hui ?</span>
+        </div>
+        <div class="veille-topics">
+          <span class="tag">CVE</span>
+          <span class="tag">Fuites de données</span>
+          <span class="tag-green tag">Alertes</span>
+        </div>
+      </div>
+
+      <div class="veille-card">
+        <div class="veille-card-title">
+          <span class="veille-icon">&#128225;</span> Actualité tech & réseaux
+        </div>
+        <p>Veille généraliste sur l'informatique, l'administration systèmes et réseaux et les nouvelles technologies.</p>
+        <div class="veille-sources">
+          <a class="veille-source" href="https://www.it-connect.fr/" target="_blank" rel="noopener">IT Connect</a>
+          <a class="veille-source" href="https://www.lemondeinformatique.fr/" target="_blank" rel="noopener">Le Monde Informatique</a>
+          <a class="veille-source" href="https://www.linformaticien.com/" target="_blank" rel="noopener">L'Informaticien</a>
+          <a class="veille-source" href="https://www.zdnet.fr/" target="_blank" rel="noopener">ZDNet</a>
+          <a class="veille-source" href="https://www.ictjournal.ch/" target="_blank" rel="noopener">ICT Journal</a>
+        </div>
+        <div class="veille-topics">
+          <span class="tag">Sysadmin</span>
+          <span class="tag-purple tag">Réseaux</span>
+        </div>
+      </div>
+
+      <div class="veille-card">
+        <div class="veille-card-title">
+          <span class="veille-icon">&#128240;</span> Innovation & digital
+        </div>
+        <p>Suivi des tendances numériques, du matériel et des innovations du secteur informatique au sens large.</p>
+        <div class="veille-sources">
+          <a class="veille-source" href="https://siecledigital.fr/" target="_blank" rel="noopener">Siècle Digital</a>
+          <a class="veille-source" href="https://www.pcworld.fr/" target="_blank" rel="noopener">PC World</a>
+          <a class="veille-source" href="https://www.presse-citron.net/" target="_blank" rel="noopener">Presse Citron</a>
+        </div>
+        <div class="veille-topics">
+          <span class="tag">Hardware</span>
+          <span class="tag">Tendances</span>
+          <span class="tag-green tag">Innovation</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-inner">
+      <div class="section-label" style="text-align:center">contact</div>
+      <h2 style="text-align:center">Travaillons ensemble</h2>
+      <div class="section-line" style="margin:0.5rem auto 2rem"></div>
+      <p>Je suis à la recherche d'une alternance en administration systèmes & réseaux à partir de septembre 2026. N'hésitez pas à me contacter !</p>
+      <div class="contact-links">
+        <a href="mailto:y.bardot@gmail.com" class="contact-link">
+          <span class="contact-link-icon">&#9993;</span>
+          y.bardot@gmail.com
+        </a>
+        <a href="tel:+33695454256" class="contact-link">
+          <span class="contact-link-icon">&#128222;</span>
+          06 95 45 42 56
+        </a>
+        <a href="https://www.linkedin.com/in/yoannbardot/" target="_blank" rel="noopener" class="contact-link">
+          <span class="contact-link-icon">&#128101;</span>
+          LinkedIn
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <span style="color:var(--muted)">Yoann Bardot · 2026</span>
+    &nbsp;·&nbsp;
+    <span style="color:var(--cyan)">yoann.bardot</span>
+    &nbsp;·&nbsp;
+    <span>Admin Sys & Réseaux · BTS SIO SISR</span>
+  </div>
+</footer>
+
+</div>
+
+<script>
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+
+const sections = document.querySelectorAll('section[id]');
+const links = document.querySelectorAll('.nav-links a');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+sections.forEach(s => observer.observe(s));
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', () => navLinks.classList.remove('open'));
+});
+</script>
+</body>
+</html>
